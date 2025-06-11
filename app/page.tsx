@@ -3,7 +3,7 @@
 import { useEffect, useState, useRef } from "react"
 import Image from "next/image"
 import Link from "next/link"
-import { motion, useScroll, useTransform } from "framer-motion"
+import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion"
 import { ArrowRight, ChevronRight, BarChart3, Target, TrendingUp, Users, Zap, X, Menu } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -170,19 +170,42 @@ export default function Home() {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex space-x-8">
-            {["Products", "Services", "Company", "Blogs", "Startup Support"].map((item) => (
-              <motion.button
-                key={item}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className={`capitalize ${
-                  activeSection === item ? "text-white border-b-2 border-white" : "text-gray-400 hover:text-white"
-                }`}
-                onClick={() => scrollToSection(item)}
+            <div className="flex items-center gap-8">
+              <button
+                onClick={() => scrollToSection("home")}
+                className="text-white hover:text-gray-300 transition-colors"
               >
-                {item}
-              </motion.button>
-            ))}
+                Home
+              </button>
+              <a
+                href="https://hs-home-git-main-parameshs-projects-5e915c35.vercel.app/#products"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-white hover:text-gray-300 transition-colors"
+              >
+                Products
+              </a>
+              <a
+                href="https://hs-home-git-main-parameshs-projects-5e915c35.vercel.app/#services"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-white hover:text-gray-300 transition-colors"
+              >
+                Services
+              </a>
+              <button
+                onClick={() => scrollToSection("about")}
+                className="text-white hover:text-gray-300 transition-colors"
+              >
+                About Us
+              </button>
+              <button
+                onClick={() => scrollToSection("team")}
+                className="text-white hover:text-gray-300 transition-colors"
+              >
+                Meet our Team
+              </button>
+            </div>
           </nav>
 
           {/* Mobile Menu Button */}
@@ -191,6 +214,49 @@ export default function Home() {
           </button>
         </div>
       </header>
+
+      {/* Mobile Navigation */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            className="fixed top-16 left-0 right-0 z-40 bg-black border-b border-white/10 md:hidden"
+          >
+            <div className="container mx-auto px-4 py-4 flex flex-col space-y-4">
+              {[
+                { name: "Home", action: () => scrollToSection("home") },
+                { 
+                  name: "Products", 
+                  action: () => window.open("https://hs-home-git-main-parameshs-projects-5e915c35.vercel.app/#products", "_blank")
+                },
+                { 
+                  name: "Services", 
+                  action: () => window.open("https://hs-home-git-main-parameshs-projects-5e915c35.vercel.app/#services", "_blank")
+                },
+                { name: "About Us", action: () => scrollToSection("about") },
+                { name: "Meet our Team", action: () => scrollToSection("team") }
+              ].map((item) => (
+                <button
+                  key={item.name}
+                  className={`capitalize py-2 ${
+                    activeSection === item.name
+                      ? "text-white border-l-2 pl-2 border-white"
+                      : "text-gray-400 hover:text-white"
+                  }`}
+                  onClick={() => {
+                    item.action();
+                    setMobileMenuOpen(false);
+                  }}
+                >
+                  {item.name}
+                </button>
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Hero Section */}
       <section ref={heroRef} className="relative min-h-screen flex items-center justify-center overflow-hidden">
@@ -224,16 +290,15 @@ export default function Home() {
                 <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
               </Button>
               
-              <Link href="http://localhost:5001/" passHref>
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="bg-transparent text-white border-white hover:bg-white hover:text-black hover:scale-105 transition-all duration-300 text-lg px-8 py-6 rounded-md group"
-                >
-                  Explore Strategy
-                  <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
-                </Button>
-              </Link>
+              <Button
+                size="lg"
+                variant="outline"
+                className="bg-transparent text-white border-white hover:bg-white hover:text-black hover:scale-105 transition-all duration-300 text-lg px-8 py-6 rounded-md group"
+                onClick={() => scrollToSection("scale-brands")}
+              >
+                Explore Strategy
+                <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+              </Button>
             </motion.div>
           </div>
         </motion.div>
@@ -325,7 +390,7 @@ export default function Home() {
       </section>
 
       {/* How We Scale Brands */}
-      <section className="py-20 bg-black">
+      <section id="scale-brands" className="py-20 bg-black">
         <div className="container px-4 md:px-6">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -702,22 +767,17 @@ export default function Home() {
               <ul className="space-y-2">
                 <li>
                   <Link href="#" className="text-gray-400 hover:text-white transition-colors">
-                    Meta Ads
+                    Dropshipping
                   </Link>
                 </li>
                 <li>
                   <Link href="#" className="text-gray-400 hover:text-white transition-colors">
-                    Google Ads
+                    Software Development
                   </Link>
                 </li>
                 <li>
                   <Link href="#" className="text-gray-400 hover:text-white transition-colors">
-                    Performance Tracking
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="text-gray-400 hover:text-white transition-colors">
-                    Conversion Optimization
+                    Digital Marketing
                   </Link>
                 </li>
               </ul>
@@ -733,17 +793,7 @@ export default function Home() {
                 </li>
                 <li>
                   <Link href="#" className="text-gray-400 hover:text-white transition-colors">
-                    Case Studies
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="text-gray-400 hover:text-white transition-colors">
-                    Testimonials
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="text-gray-400 hover:text-white transition-colors">
-                    Careers
+                    Meet our Team
                   </Link>
                 </li>
               </ul>
@@ -760,17 +810,13 @@ export default function Home() {
           </div>
 
           <div className="border-t border-gray-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
-            <p className="text-gray-500 text-sm">© {new Date().getFullYear()} Hynox. All rights reserved.</p>
-            <div className="flex space-x-6 mt-4 md:mt-0">
-              <Link href="#" className="text-gray-500 hover:text-white text-sm transition-colors">
-                Privacy Policy
-              </Link>
-              <Link href="#" className="text-gray-500 hover:text-white text-sm transition-colors">
-                Terms of Service
-              </Link>
-              <Link href="#" className="text-gray-500 hover:text-white text-sm transition-colors">
-                Cookie Policy
-              </Link>
+            <div className="text-sm text-gray-400">
+              © 2024 The Black Crest. All rights reserved.
+              <div className="flex gap-4 mt-2">
+                <Link href="/privacy-policy" className="hover:text-white transition-colors">Privacy Policy</Link>
+                <Link href="/terms-and-conditions" className="hover:text-white transition-colors">Terms of Service</Link>
+                <Link href="/cookies" className="hover:text-white transition-colors">Cookie Policy</Link>
+              </div>
             </div>
           </div>
         </div>
